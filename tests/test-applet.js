@@ -29,13 +29,18 @@ const process = {
     force_exit() { exited++; }
 };
 const context = {imports: {
+    gettext: {bindtextdomain() {}, dgettext(uuid, text) {return text;}},
     ui: {applet: {TextIconApplet:Base, AllowedLayout:{BOTH:0}, AppletPopupMenu:Menu},
         popupMenu: {PopupMenuManager:class {addMenu() {}}, PopupMenuItem:Item, PopupSeparatorMenuItem:Item}},
     mainloop: {timeout_add_seconds(s, cb) { if (s === 15) timeoutCallback = cb; return s; }, source_remove(id) { removed.push(id); }},
-    gi: {GLib:{build_filenamev:parts=>parts.join('/')}, Gio:{SubprocessFlags:{STDOUT_PIPE:1, STDERR_PIPE:2},
+    gi: {GLib:{build_filenamev:parts=>parts.join('/'), get_home_dir:()=>'/home/test', SOURCE_REMOVE:false, SOURCE_CONTINUE:true}, Gio:{SubprocessFlags:{STDOUT_PIPE:1, STDERR_PIPE:2},
         Subprocess:{new() {processCount++; return process;}}}}
 }};
 vm.createContext(context);
+vm.runInContext(`String.prototype.format = function(...args) {
+    let i = 0;
+    return this.replace(/%[%sd]/g, token => token === '%%' ? '%' : String(args[i++]));
+};`, context);
 vm.runInContext(fs.readFileSync('files/razer-battery@akasolace/applet.js', 'utf8'), context);
 const applet = context.main({path:'/test'}, 0, 30, 1);
 applet._refresh();

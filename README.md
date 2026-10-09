@@ -20,8 +20,9 @@ driver changes, device writes, or an extra tray application.
 
 An already functioning OpenRazer installation and user daemon, including the
 `openrazer.client` Python package accessible to `/usr/bin/python3` (normally
-`python3-openrazer`). Follow [OpenRazer's documentation](https://openrazer.github.io/)
-if it is not configured. This applet does not install or modify drivers.
+`python3-openrazer`). Use your distribution’s trusted package repositories and package manager
+for available OpenRazer packages. The applet requires an existing working
+OpenRazer setup if those packages are unavailable in your distribution. This applet does not install or modify drivers.
 
 Check from a terminal in your desktop session:
 
@@ -91,9 +92,10 @@ The helper's real-device snapshot is also checked separately. Automated checks
 cover invalid and missing readings, unsupported charging, multiple devices,
 query overlap, timeouts, and removal cleanup.
 
-Not yet verified in a live panel: visual layout/theme icons, panel orientation,
-60-second refresh over time, physical charging and unplug/reconnect transitions,
-and multiple physical devices. Treat version 1.0.0 as an initial release;
+The user has confirmed successful operation in a live panel, and the included
+screenshot shows the running applet. Vertical-panel layout, 60-second refresh
+over time, physical charging and unplug/reconnect transitions, and multiple
+physical devices have not yet been verified. Treat version 1.0.0 as an initial release;
 unit tests do not establish those desktop/hardware behaviors.
 
 ## Development
@@ -108,3 +110,18 @@ API references: [Cinnamon applet tutorial](https://github.com/linuxmint/cinnamon
 and [OpenRazer Python client](https://github.com/openrazer/openrazer/tree/master/pylib/openrazer/client).
 
 MIT licensed. This is an independent project, unaffiliated with Razer or Linux Mint.
+
+## Cinnamon Spices submission
+
+`SPICES.md` is the distribution-specific README. `info.json`, `screenshot.png`,
+and the bundled icon and translation template support upstream submission.
+Export a fresh package into a Cinnamon Spices checkout with:
+
+```sh
+python3 tools/export-spice.py /path/to/cinnamon-spices-applets
+cd /path/to/cinnamon-spices-applets
+./validate-spice razer-battery@akasolace
+```
+
+The export refuses to overwrite an existing applet directory. Regenerate the
+translation template with `xgettext` for both `applet.js` and `battery.py`.

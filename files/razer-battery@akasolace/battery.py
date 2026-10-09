@@ -1,6 +1,13 @@
 #!/usr/bin/python3
 """Read-only OpenRazer snapshot; stdout is always one JSON document."""
+# SPDX-License-Identifier: MIT
+import gettext
 import json
+from pathlib import Path
+
+_ = gettext.translation('razer-battery@akasolace',
+                        localedir=str(Path.home() / '.local/share/locale'),
+                        fallback=True).gettext
 import math
 
 
@@ -8,7 +15,7 @@ def snapshot(manager_factory):
     try:
         devices = manager_factory().devices
     except Exception:
-        return {"devices": [], "error": "OpenRazer unavailable. Check the user daemon and session bus."}
+        return {"devices": [], "error": _("OpenRazer unavailable. Check the user daemon and session bus.")}
     result = []
     for device in devices:
         try:
@@ -26,7 +33,7 @@ def snapshot(manager_factory):
                 raise ValueError("Invalid battery")
             entry["battery"] = round(level)
         except Exception:
-            entry["error"] = "Battery unavailable (device disconnected or asleep)."
+            entry["error"] = _("Battery unavailable (device disconnected or asleep).")
         if entry["battery"] is not None:
             try:
                 entry["charging"] = bool(device.is_charging)
@@ -40,7 +47,7 @@ def main():
     try:
         from openrazer.client import DeviceManager
     except ImportError:
-        data = {"devices": [], "error": "OpenRazer Python API missing. Install python3-openrazer for /usr/bin/python3."}
+        data = {"devices": [], "error": _("OpenRazer Python API missing. Install python3-openrazer for /usr/bin/python3.")}
     else:
         data = snapshot(DeviceManager)
     print(json.dumps(data, ensure_ascii=True))
