@@ -8,6 +8,8 @@ driver changes, device writes, or an extra tray application.
 
 - Theme battery icon and percentages in horizontal or vertical panels.
 - Automatic refresh every 60 seconds, plus **Refresh now** in the click menu.
+- Immediate refresh at login and when the Cinnamon lock screen closes, followed
+  by a retry after three seconds while the daemon and receiver settle.
 - All battery-capable OpenRazer devices, in stable name/serial order. Multiple
   percentages appear as `100% / 55%`; the tooltip and menu identify each device.
 - Icon uses the lowest available battery; a charging emblem means at least one
@@ -95,7 +97,7 @@ query overlap, timeouts, and removal cleanup.
 The user has confirmed successful operation in a live panel, and the included
 screenshot shows the running applet. Vertical-panel layout, 60-second refresh
 over time, physical charging and unplug/reconnect transitions, and multiple
-physical devices have not yet been verified. Treat version 1.0.0 as an initial release;
+physical devices have not yet been verified. Treat version 1.0.1 as an initial release;
 unit tests do not establish those desktop/hardware behaviors.
 
 ## Development
@@ -125,3 +127,7 @@ cd /path/to/cinnamon-spices-applets
 
 The export refuses to overwrite an existing applet directory. Regenerate the
 translation template with `xgettext` for both `applet.js` and `battery.py`.
+
+The login/unlock refresh, delayed retry, in-flight query handling, and cleanup
+are covered by automated tests. A physical lock/unlock cycle with this update
+still needs user verification.
